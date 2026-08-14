@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadence
+  labels:
+    app: cadence
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cadence
+  template:
+    metadata:
+      labels:
+        app: cadence
+    spec:
+      containers:
+        - name: cadence
+          image: ghcr.io/nightnoryu/cadence-backend:latest
+          args: [ "service" ]
+          ports:
+            - containerPort: 8080
+          env:
+            - name: CADENCE_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_HOST
+            - name: CADENCE_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_PORT
+            - name: CADENCE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_NAME
+            - name: CADENCE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cadence-credentials
+                  key: DB_USER
+            - name: CADENCE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cadence-credentials
+                  key: DB_PASSWORD
+            - name: CADENCE_DB_MAX_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_MAX_CONN
+            - name: CADENCE_DB_CONN_LIFETIME
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_CONN_LIFETIME
+            - name: CADENCE_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: REDIS_HOST
+            - name: CADENCE_REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: REDIS_PORT
+            - name: CADENCE_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cadence-credentials
+                  key: REDIS_PASSWORD
+            - name: CADENCE_REDIS_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: REDIS_DB
+            - name: CADENCE_SESSION_MAX_PER_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: SESSION_MAX_PER_USER
+            - name: CADENCE_SESSION_TTL
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: SESSION_TTL
+            - name: CADENCE_CORS_ALLOWED_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: CORS_ALLOWED_ORIGINS
+          readinessProbe:
+            httpGet:
+              path: /resilience/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /resilience/ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              memory: 256Mi

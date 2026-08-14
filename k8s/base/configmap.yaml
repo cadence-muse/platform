@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cadence-config
+data:
+  DB_HOST: "cadence-db"
+  DB_PORT: "5432"
+  DB_NAME: "cadence"
+  DB_MAX_CONN: "10"
+  DB_CONN_LIFETIME: "60"
+  REDIS_HOST: "cadence-redis"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  SESSION_MAX_PER_USER: "5"
+  SESSION_TTL: "72h"

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadence-client
+  labels:
+    app: cadence-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cadence-client
+  template:
+    metadata:
+      labels:
+        app: cadence-client
+    spec:
+      containers:
+        - name: cadence-client
+          image: ghcr.io/nightnoryu/cadence-client:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
