@@ -8,19 +8,16 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: api.cadence.app
+    - host: cadence.app
       http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
                 name: cadence
                 port:
                   number: 8080
-    - host: cadence.app
-      http:
-        paths:
           - path: /
             pathType: Prefix
             backend:
@@ -30,5 +27,4 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - api.cadence.app
         - cadence.app
