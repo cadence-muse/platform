@@ -14,6 +14,15 @@ spec:
       labels:
         app: cadence
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: cadence
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: cadence
           image: ghcr.io/nightnoryu/cadence-backend:latest
