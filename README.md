@@ -5,9 +5,9 @@ Deployment settings for the [Cadence app](https://github.com/nightnoryu/cadence-
 ## Layout
 
 - `k8s/base` — shared manifests: backend, frontend, Postgres, Redis.
-- `k8s/cluster` — cluster-scoped resources (cert-manager `ClusterIssuer`), applied once per cluster.
-- `k8s/staging` — staging overlay, namespace `cadence-staging`, hosts `api.beta.cadence.app` / `beta.cadence.app`.
-- `k8s/production` — production overlay, namespace `cadence`, hosts `api.cadence.app` / `cadence.app`.
+- `k8s/production` — production overlay, namespace `cadence`, host `cadence.app` (routes `/api` to the backend,
+  `/` to the frontend). Uses Traefik (`ingressClassName: traefik`) with the `myresolver` cert resolver for TLS —
+  no cert-manager involved.
 
 Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://github.com/getsops/sops) (age). They are
 **not** wired into kustomize — decrypt and apply them manually before applying the overlay.
@@ -22,13 +22,6 @@ Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://g
 
 ## Deployment
 
-### Staging
-
-```bash
-sops -d k8s/staging/secret.enc.yaml | kubectl apply -f -
-kubectl apply -k k8s/staging
-```
-
 ### Production
 
 ```bash
@@ -39,7 +32,7 @@ kubectl apply -k k8s/production
 ## Editing secrets
 
 ```bash
-sops k8s/production/secret.enc.yaml   # or k8s/staging/secret.enc.yaml
+sops k8s/production/secret.enc.yaml
 ```
 
 Opens the decrypted secret in `$EDITOR` and re-encrypts on save. Never commit a decrypted secret file.
