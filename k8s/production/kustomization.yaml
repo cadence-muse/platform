@@ -9,6 +9,6 @@ resources:
 
 images:
   - name: ghcr.io/nightnoryu/cadence-backend
-    newTag: latest
+    newTag: 0.1.0
   - name: ghcr.io/nightnoryu/cadence-client
-    newTag: latest
+    newTag: 0.1.0
