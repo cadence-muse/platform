@@ -12,16 +12,3 @@ images:
     newTag: latest
   - name: ghcr.io/nightnoryu/cadence-client
     newTag: latest
-
-replicas:
-  - name: cadence
-    count: 2
-
-patches:
-  - target:
-      kind: ConfigMap
-      name: cadence-config
-    patch: |-
-      - op: add
-        path: /data/CORS_ALLOWED_ORIGINS
-        value: https://cadence.app
