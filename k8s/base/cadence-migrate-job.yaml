@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cadence-migrate
+  labels:
+    app: cadence-migrate
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: cadence-migrate
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: cadence-migrate
+          image: ghcr.io/nightnoryu/cadence-backend:latest
+          args: [ "migrate" ]
+          env:
+            - name: CADENCE_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_HOST
+            - name: CADENCE_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_PORT
+            - name: CADENCE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_NAME
+            - name: CADENCE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cadence-credentials
+                  key: DB_USER
+            - name: CADENCE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cadence-credentials
+                  key: DB_PASSWORD
+            - name: CADENCE_DB_MAX_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_MAX_CONN
+            - name: CADENCE_DB_CONN_LIFETIME
+              valueFrom:
+                configMapKeyRef:
+                  name: cadence-config
+                  key: DB_CONN_LIFETIME
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              memory: 256Mi

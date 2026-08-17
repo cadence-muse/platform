@@ -15,8 +15,10 @@ resources:
   - cadence-deployment.yaml
   - cadence-service.yaml
   - cadence-pdb.yaml
+  - cadence-migrate-job.yaml
   - cadence-client-deployment.yaml
   - cadence-client-service.yaml
+  - cadence-client-pdb.yaml
 
 labels:
   - includeSelectors: false
