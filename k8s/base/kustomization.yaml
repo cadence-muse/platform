@@ -6,19 +6,10 @@ namespace: cadence
 resources:
   - namespace.yaml
   - configmap.yaml
-  - postgres-pvc.yaml
-  - postgres-deployment.yaml
-  - postgres-service.yaml
-  - redis-pvc.yaml
-  - redis-deployment.yaml
-  - redis-service.yaml
-  - cadence-deployment.yaml
-  - cadence-service.yaml
-  - cadence-pdb.yaml
-  - cadence-migrate-job.yaml
-  - cadence-client-deployment.yaml
-  - cadence-client-service.yaml
-  - cadence-client-pdb.yaml
+  - postgres
+  - redis
+  - cadence-server
+  - cadence-client
 
 labels:
   - includeSelectors: false
