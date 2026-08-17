@@ -108,7 +108,7 @@ spec:
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /resilience/ready
+              path: /resilience/live
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
