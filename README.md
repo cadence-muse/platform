@@ -26,8 +26,15 @@ Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://g
 
 ```bash
 sops -d k8s/production/secret.enc.yaml | kubectl apply -f -
+kubectl delete job -n cadence cadence-migrate --ignore-not-found
+kubectl kustomize k8s/production | kubectl apply -f - -l app=cadence-migrate
+kubectl wait --for=condition=complete job/cadence-migrate -n cadence --timeout=180s
 kubectl apply -k k8s/production
 ```
+
+The `cadence-migrate` Job runs the backend image with `migrate` and must exit `0` before the rest of the
+overlay (including the `cadence` Deployment) is applied — `kubectl wait` blocks on it, and the sequence must
+stop if any step fails.
 
 ## Editing secrets
 
