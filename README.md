@@ -27,7 +27,7 @@ Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://g
 
 ### Production
 
-```bash
+```shell
 kubectl apply -f k8s/base/namespace.yaml
 sops -d k8s/production/secret.enc.yaml | kubectl apply -f -
 kubectl delete job -n cadence cadence-migrate --ignore-not-found
@@ -42,7 +42,7 @@ stop if any step fails.
 
 ### Logging
 
-```bash
+```shell
 kubectl apply -f k8s/logging/namespace.yaml
 sops -d k8s/logging/secret.enc.yaml | kubectl apply -f -
 kubectl apply -k k8s/logging
@@ -50,7 +50,7 @@ kubectl apply -k k8s/logging
 
 View logs:
 
-```bash
+```shell
 kubectl port-forward -n logging svc/grafana 3000:3000
 ```
 
@@ -59,7 +59,7 @@ Open `localhost:3000`, log in `admin` / the decrypted `GF_SECURITY_ADMIN_PASSWOR
 
 ## Editing secrets
 
-```bash
+```shell
 sops k8s/production/secret.enc.yaml
 ```
 
