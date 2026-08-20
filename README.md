@@ -28,6 +28,7 @@ Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://g
 ### Production
 
 ```bash
+kubectl apply -f k8s/base/namespace.yaml
 sops -d k8s/production/secret.enc.yaml | kubectl apply -f -
 kubectl delete job -n cadence cadence-migrate --ignore-not-found
 kubectl kustomize k8s/production | kubectl apply -f - -l app=cadence-migrate
@@ -42,6 +43,7 @@ stop if any step fails.
 ### Logging
 
 ```bash
+kubectl apply -f k8s/logging/namespace.yaml
 sops -d k8s/logging/secret.enc.yaml | kubectl apply -f -
 kubectl apply -k k8s/logging
 ```
