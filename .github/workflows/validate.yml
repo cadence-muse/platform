@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        overlay: [base, production, dev, logging]
+        overlay: [base, dev, prod, logging]
     steps:
       - uses: actions/checkout@v6
 
