@@ -5,7 +5,7 @@ Deployment settings for the [Cadence app](https://github.com/nightnoryu/cadence-
 ## Layout
 
 - `k8s/base` — shared manifests: backend, frontend, Postgres, Redis.
-- `k8s/production` — production overlay, namespace `cadence`, host `cadence.app` (routes `/api` to the backend,
+- `k8s/prod` — production overlay, namespace `cadence`, host `cadence.app` (routes `/api` to the backend,
   `/` to the frontend). Uses Traefik (`ingressClassName: traefik`) with the `myresolver` cert resolver for TLS —
   no cert-manager involved.
 - `k8s/dev` — local/dev overlay, namespace `cadence`, host `cadence.lan`. Same routing as production but plain
@@ -32,11 +32,11 @@ Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://g
 
 ```shell
 kubectl apply -f k8s/base/namespace.yaml
-sops -d k8s/production/secret.enc.yaml | kubectl apply -f -
+sops -d k8s/prod/secret.enc.yaml | kubectl apply -f -
 kubectl delete job -n cadence cadence-migrate --ignore-not-found
-kubectl kustomize k8s/production | kubectl apply -f - -l app=cadence-migrate
+kubectl kustomize k8s/prod | kubectl apply -f - -l app=cadence-migrate
 kubectl wait --for=condition=complete job/cadence-migrate -n cadence --timeout=180s
-kubectl apply -k k8s/production
+kubectl apply -k k8s/prod
 ```
 
 The `cadence-migrate` Job runs the backend image with `migrate` and must exit `0` before the rest of the
@@ -92,7 +92,7 @@ Open `localhost:3000`, log in `admin` / the decrypted `GF_SECURITY_ADMIN_PASSWOR
 ## Editing secrets
 
 ```shell
-sops k8s/production/secret.enc.yaml
+sops k8s/prod/secret.enc.yaml
 ```
 
 Opens the decrypted secret in `$EDITOR` and re-encrypts on save. Never commit a decrypted secret file.
