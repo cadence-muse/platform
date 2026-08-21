@@ -6,6 +6,7 @@ namespace: cadence
 resources:
   - ../base
   - ingress.yaml
+  - ratelimit-middleware.yaml
 
 images:
   - name: ghcr.io/nightnoryu/cadence-backend
