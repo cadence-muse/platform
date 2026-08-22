@@ -33,44 +33,12 @@ Secrets are committed as `secret.enc.yaml` files encrypted with [sops](https://g
 ```shell
 kubectl apply -f k8s/base/namespace.yaml
 sops -d k8s/prod/secret.enc.yaml | kubectl apply -f -
-kubectl delete job -n cadence cadence-migrate --ignore-not-found
-kubectl kustomize k8s/prod | kubectl apply -f - -l app=cadence-migrate
-kubectl wait --for=condition=complete job/cadence-migrate -n cadence --timeout=180s
 kubectl apply -k k8s/prod
 ```
 
 The `cadence-migrate` Job runs the backend image with `migrate` and must exit `0` before the rest of the
 overlay (including the `cadence` Deployment) is applied — `kubectl wait` blocks on it, and the sequence must
 stop if any step fails.
-
-### Dev
-
-```shell
-kubectl apply -f k8s/base/namespace.yaml
-sops -d k8s/dev/secret.enc.yaml | kubectl apply -f -
-kubectl delete job -n cadence cadence-migrate --ignore-not-found
-kubectl kustomize k8s/dev | kubectl apply -f - -l app=cadence-migrate
-kubectl wait --for=condition=complete job/cadence-migrate -n cadence --timeout=180s
-kubectl apply -k k8s/dev
-```
-
-Point `cadence.lan` at the target machine (`/etc/hosts` or local DNS) — no TLS, plain HTTP.
-
-#### On `kind`
-
-`k8s/dev` retags images to `:dev` with `imagePullPolicy: Never`, so nothing is pulled from ghcr.io — build
-locally and load into the kind node(s) before applying:
-
-```shell
-docker build -t cadence-backend:dev <path-to-cadence-backend>
-docker build -t cadence-client:dev <path-to-cadence-client>
-kind load docker-image cadence-backend:dev --name <cluster-name>
-kind load docker-image cadence-client:dev --name <cluster-name>
-```
-
-Then run the deployment steps above. After rebuilding, `kind load` again and `kubectl rollout restart` the
-affected Deployment (same tag won't trigger a new pull/roll on its own since the policy is `Never`, not
-re-checked).
 
 ### Logging
 
