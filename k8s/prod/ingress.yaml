@@ -4,12 +4,12 @@ metadata:
   name: cadence
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls.certresolver: myresolver
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
     traefik.ingress.kubernetes.io/router.middlewares: cadence-cadence-ratelimit@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
-    - host: cadence.app
+    - host: app.cadence.nightnoryu.com
       http:
         paths:
           - path: /api
@@ -28,4 +28,4 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - cadence.app
+        - app.cadence.nightnoryu.com
