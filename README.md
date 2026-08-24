@@ -8,6 +8,7 @@ Deployment settings for the Cadence app.
 
 - `k3s` on target VM
 - `kubectl`
+- `sops` and `age` with age private key
 - `kustomize` and `ksops`
 
 ### Applying prod manifests
