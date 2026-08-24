@@ -25,7 +25,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: cadence
-          image: ghcr.io/nightnoryu/cadence-backend:latest
+          image: ghcr.io/cadence-muse/cadence:latest
           args: [ "service" ]
           ports:
             - containerPort: 8080

@@ -9,7 +9,7 @@ resources:
   - ratelimit-middleware.yaml
 
 images:
-  - name: ghcr.io/nightnoryu/cadence-backend
+  - name: ghcr.io/cadence-muse/cadence
     newTag: 0.1.0
-  - name: ghcr.io/nightnoryu/cadence-client
+  - name: ghcr.io/cadence-muse/client
     newTag: 0.1.0
