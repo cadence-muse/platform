@@ -5,7 +5,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls.certresolver: default
-    traefik.ingress.kubernetes.io/router.middlewares: cadence-cadence-ratelimit@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: cadence-ratelimit@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:

@@ -6,7 +6,9 @@ namespace: cadence
 resources:
   - ../base
   - ingress.yaml
-  - ratelimit-middleware.yaml
+
+generators:
+  - secret-generator.yaml
 
 images:
   - name: ghcr.io/cadence-muse/cadence

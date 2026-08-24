@@ -4,12 +4,13 @@ kind: Kustomization
 namespace: cadence
 
 resources:
-  - namespace.yaml
-  - configmap.yaml
   - postgres
   - redis
   - cadence-server
   - cadence-client
+  - namespace.yaml
+  - configmap.yaml
+  - ratelimit.yaml
 
 labels:
   - includeSelectors: false
