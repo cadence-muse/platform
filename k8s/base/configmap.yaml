@@ -13,4 +13,4 @@ data:
   REDIS_DB: "0"
   SESSION_MAX_PER_USER: "5"
   SESSION_TTL: "168h"
-  CORS_ALLOWED_ORIGINS: "https://cadence.app"
+  CORS_ALLOWED_ORIGINS: "https://app.cadence.nightnoryu.com"
