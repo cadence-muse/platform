@@ -16,8 +16,7 @@ jobs:
 
       - name: Set up ksops
         run: |
-          go install github.com/viaduct-ai/kustomize-sops/cmd/ksops@latest
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | bash
 
       - name: Set up Kubernetes context
         uses: azure/k8s-set-context@v4
