@@ -11,14 +11,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Set up sops
-        uses: mdgreenwald/mozilla-sops-action@v1.6.0
-        with:
-          version: 'latest'
+      - name: Set up kustomize
+        uses: imranismail/setup-kustomize@v2
 
-      - name: Install age
+      - name: Set up ksops
         run: |
-          sudo apt-get update && sudo apt-get install -y age
+          go install github.com/viaduct-ai/kustomize-sops/cmd/ksops@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Set up Kubernetes context
         uses: azure/k8s-set-context@v4
@@ -30,6 +29,9 @@ jobs:
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
-          kubectl apply -f k8s/base/namespace.yaml
-          sops -d k8s/prod/secret.enc.yaml | kubectl apply -f -
-          kubectl apply -k k8s/prod
+          kustomize build --enable-alpha-plugins --enable-exec k8s/prod | kubectl apply -f -
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/cadence-server -n cadence --timeout=300s
+          kubectl rollout status deployment/cadence-client -n cadence --timeout=300s
