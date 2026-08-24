@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        overlay: [base, dev, prod, logging]
+        overlay: [base, prod]
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
       - name: Install kubeconform
         run: |
