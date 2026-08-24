@@ -1,0 +1,35 @@
+name: Apply Kubernetes Manifests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    environment: prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up sops
+        uses: mdgreenwald/mozilla-sops-action@v1.6.0
+        with:
+          version: 'latest'
+
+      - name: Install age
+        run: |
+          sudo apt-get update && sudo apt-get install -y age
+
+      - name: Set up Kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: Apply manifests
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          kubectl apply -f k8s/base/namespace.yaml
+          sops -d k8s/prod/secret.enc.yaml | kubectl apply -f -
+          kubectl apply -k k8s/prod
