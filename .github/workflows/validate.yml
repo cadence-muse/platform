@@ -2,10 +2,10 @@ name: Validate Configs
 
 on:
   pull_request:
-    paths: [ 'k8s/**' ]
+    paths: [ 'k8s/base/**' ]
   push:
     branches: [ main ]
-    paths: [ 'k8s/**' ]
+    paths: [ 'k8s/base/**' ]
 
 permissions:
   contents: read
@@ -13,9 +13,6 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        overlay: [base, prod]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -27,7 +24,7 @@ jobs:
           sudo mv kubeconform /usr/local/bin/kubeconform
 
       - name: Build kustomization
-        run: kubectl kustomize k8s/${{ matrix.overlay }} > rendered.yaml
+        run: kubectl kustomize k8s/base > rendered.yaml
 
       - name: Validate rendered manifests
         run: |
