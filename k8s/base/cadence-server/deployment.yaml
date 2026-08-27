@@ -26,6 +26,7 @@ spec:
       containers:
         - name: cadence
           image: ghcr.io/cadence-muse/cadence:latest
+          imagePullPolicy: IfNotPresent
           args: [ "service" ]
           ports:
             - containerPort: 8080
