@@ -14,4 +14,4 @@ images:
   - name: ghcr.io/cadence-muse/cadence
     newTag: 0.1.1
   - name: ghcr.io/cadence-muse/client
-    newTag: 0.1.2
+    newTag: 0.1.3
