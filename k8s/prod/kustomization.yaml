@@ -10,6 +10,16 @@ resources:
 generators:
   - secret-generator.yaml
 
+patches:
+  - target:
+      kind: Secret
+      name: cadence-credentials
+    patch: |-
+      - op: add
+        path: /metadata/labels
+        value:
+          app.kubernetes.io/component: prerequisite
+
 images:
   - name: ghcr.io/cadence-muse/cadence
     newTag: 0.2.1

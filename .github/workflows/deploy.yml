@@ -3,6 +3,10 @@ name: Apply Kubernetes Manifests
 on:
   workflow_dispatch:
 
+concurrency:
+  group: cadence-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     environment: prod
@@ -24,11 +28,30 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBECONFIG }}
 
-      - name: Apply manifests
+      - name: Apply prerequisites
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
-          kustomize build --enable-alpha-plugins --enable-exec k8s/prod | kubectl apply -f -
+          kustomize build --enable-alpha-plugins --enable-exec k8s/prod > rendered.yaml
+          kubectl apply -f rendered.yaml -l app.kubernetes.io/component=prerequisite
+
+      - name: Wait for prerequisites
+        run: |
+          kubectl rollout status deployment/cadence-db -n cadence --timeout=300s
+          kubectl rollout status deployment/cadence-redis -n cadence --timeout=300s
+
+      - name: Run migrations
+        run: |
+          kubectl delete job/cadence-migrate -n cadence --ignore-not-found --wait=true
+          kubectl apply -f rendered.yaml -l app.kubernetes.io/component=migration
+          if ! kubectl wait --for=condition=complete job/cadence-migrate -n cadence --timeout=300s; then
+            kubectl describe job/cadence-migrate -n cadence
+            kubectl logs job/cadence-migrate -n cadence --all-containers
+            exit 1
+          fi
+
+      - name: Apply manifests
+        run: kubectl apply -f rendered.yaml
 
       - name: Wait for rollout
         run: |
