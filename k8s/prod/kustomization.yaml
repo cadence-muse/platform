@@ -22,6 +22,6 @@ patches:
 
 images:
   - name: ghcr.io/cadence-muse/cadence
-    newTag: 0.2.1
+    newTag: 0.2.2
   - name: ghcr.io/cadence-muse/client
     newTag: 0.2.4
